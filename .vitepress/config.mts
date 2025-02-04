@@ -17,9 +17,10 @@ export default defineConfig({
       {
         text: 'Examples',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' },
-          { text: 'vitePress', link: '/vitePress' }
+          // { text: 'Markdown Examples', link: '/markdown-examples' },
+          // { text: 'Runtime API Examples', link: '/api-examples' },
+          { text: 'vitePress', link: '/vitePress' },
+          { text: '埋点', link: '/tracker' }
         ]
       }
     ],

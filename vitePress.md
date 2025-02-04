@@ -1,8 +1,8 @@
 ---
 outline: deep
-prev:
-  text: 'api-examples'
-  link: '/api-examples'
+next:
+  text: '埋点'
+  link: '/tracker'
 ---
 # vitePress
 
