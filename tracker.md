@@ -25,18 +25,31 @@ type="module" 他发起http请求，vite会拦截处理里面的逻辑，用koa�
 ### 上报埋点应选择一个什么调用接口的方案
 ```md
 一般都会选择navigator.sendBeacon
+navigator.sendBeacon接收2个值，一个是url，一个是data
+navigator.sendBeacon(url, data);
+url：将要被发送到的网络地址
+data：是将要发送的数据，数据类型有以下这些
+ArrayBuffer、ArrayBufferView、Blob、DOMString、FormData 或 URLSearchParams 类型的数据。
 ```
 ```md
-axiso、fetch、xml 
+axiso、fetch、xml
+优点：
+1、可以发送任意请求
+2、可以传输任意字节数据
+3、可以定义任意请求头
 缺点：
-关闭页面的时候接口就停止了
+1、关闭页面的时候接口就停止了
 ```
 ```md
 navigator.sendBeacon
 优点：
-关闭页面接口也会给你走完
+1、关闭页面接口也会给你走完
+2、异步执行，不阻塞页面关闭或跳转。
+3、能够发送跨域请求。
 缺点：
-不支持跨域、不支持json
+1、只能发送POST请求
+2、不支持json，只能传输ArrayBuffer、ArrayBufferView、Blob、DOMString、FormData 或 URLSearchParams 类型的数据。
+3、无法自定义请求头
 ```
 ### cors
 ```md
@@ -55,10 +68,15 @@ Content-Language
 Last-Event-ID
 Content-Type：只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain
 ```
-```md
-res.header('Access-Control-Allow-Origin', 'http://localhost:5173');//允许域名的端口请求
-res.header('Access-Control-Allow-Credentials', 'true');//允许携带cookie  谷歌浏览器95版本之后不允许cookie跨域
-res.header('Access-Control-Allow-Headers', 'Content-Type');//允许请求头
+```js
+//允许域名的端口请求
+res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+//允许携带cookie  谷歌浏览器95版本之后不允许cookie跨域
+res.header('Access-Control-Allow-Credentials', 'true');
+//允许请求方法
+res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); 
+//允许请求头
+res.header('Access-Control-Allow-Headers', 'Content-Type');
 ```
 ```md
 res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); 
@@ -73,8 +91,8 @@ DOM元素到浏览器可视范围的距离。
 DOM元素的高、宽。
 ```
 ### window.addEventListener
-```md
-window.addEventListener这是一个发布订阅模式
+```js
+// window.addEventListener这是一个发布订阅模式
 const e = new Event('mySelfEvent') //注册事件---名字自己取
 window.dispatchEvent(e) //触发事件
 window.addEventListener('mySelfEvent', (e) => {
@@ -82,15 +100,43 @@ window.addEventListener('mySelfEvent', (e) => {
   console.log(e)
 })
 ```
-### 监听DOM的变化
-```md
-MutationObserver
-// const ob = new MutationObserver() //创建
+### 监听DOM的变化---MutationObserver
+```js
+const ob = new MutationObserver() //创建
 // ob.observe(target,options) target:观察的目标节点 options:配置对象
-// ob.observe(document.body, { subtree: true, childList: true }) // subtree 是否观察子节点变化 childList是否观察子节点增减
-// ob.disconnect() 关闭
-
-
+ob.observe(document.body, { subtree: true, childList: true }) 
+// subtree 是否观察子节点变化 childList是否观察子节点增减
+ob.disconnect() 关闭
+```
+### vite打包
+```js
+import { defineConfig } from 'vite'
+import type { Plugin } from 'vite'
+const plugin = (): Plugin => {
+    return {
+        name: 'my-plugin',
+        transform(code, id) {
+            console.log('code', code)
+        }
+    }
+}
+export default defineConfig({
+    plugins: [plugin()],
+    build: {
+        lib: {
+            entry: "./src/index.ts",
+            name: "Tracker",
+            fileName: "tracker",
+            formats: ["es", "iife", "cjs", "umd"]
+        }
+    }
+})
+```
+```md
+es：打包出来的文件是.mjs后缀，使用import引入使用
+iife：打包出来的文件是iife.js后缀，可以直接在script标签引入，是一个闭包
+cjs：打包出来的文件是.js后缀，使用requires引入使用
+umd：打包出来的文件是umd.js后缀，可以在amd、cmd、requires、script标签都能引入使用
 ```
 ## 正文
 
@@ -288,5 +334,51 @@ class Tracker {
 }
 
 export default Tracker;
+```
+### 服务、发邮件
+```js
+import express from 'express'
+import nodemailer from 'nodemailer'
+const transporter = nodemailer.createTransport({
+  port: 456,//端口
+  host: 'smtp.qq.com',//发送方邮箱
+  secure: true,//true for 465, false for other ports
+  service: 'qq',// 服务
+  auth: {
+    user: "xxxxxxxxx@qq.com",//发送方邮箱
+    pass: "xxxxxxxxxxxx"//授权码
+  }
+
+})
+const app = express()
+//use 中间件 支持一下post
+app.use(express.json())
+app.use('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5174');//允许域名的端口请求
+  res.header('Access-Control-Allow-Credentials', 'true');//允许携带cookie  谷歌浏览器95版本之后不允许cookie跨域
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); //允许请求方法
+  res.header('Access-Control-Allow-Headers', 'Content-Type');//允许请求头
+  next();
+});
+app.post('/tracker', (req, res) => {
+  let mailOptions = {
+    from: 'xxxxxxxxx@qq.com',//发送方邮箱
+    to: 'xxxxxxxx@qq.com',//接收方邮箱
+    subject: "发邮件看看",//  主题
+    text: JSON.stringify(req.body)//内容
+  };
+
+  transporter.sendMail(mailOptions, (error:any, info:any) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+  });
+  res.send('OK');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});
 ```
 
