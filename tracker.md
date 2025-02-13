@@ -3,6 +3,9 @@ outline: deep
 prev:
   text: 'vitePresss'
   link: '/vitePress'
+next:
+  text: 'jQuery 无new构建'
+  link: '/jQuery_new'
 ---
 
 # 埋点

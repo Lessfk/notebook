@@ -20,7 +20,8 @@ export default defineConfig({
           // { text: 'Markdown Examples', link: '/markdown-examples' },
           // { text: 'Runtime API Examples', link: '/api-examples' },
           { text: 'vitePress', link: '/vitePress' },
-          { text: '埋点', link: '/tracker' }
+          { text: '埋点', link: '/tracker' },
+          { text: 'jQuery 无new构建', link: '/jQuery_new' }
         ]
       }
     ],
