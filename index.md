@@ -8,11 +8,11 @@ hero:
   tagline: 记忆碎片
   actions:
     - theme: brand
-      text: Markdown Examples按钮
-      link: /markdown-examples
-    - theme: brand
-      text: Markdown Examples按钮
-      link: /markdown-examples
+      text: 资料碎片
+      link: /vitePress
+    # - theme: brand
+    #   text: Markdown Examples按钮
+    #   link: /markdown-examples
     # - theme: alt
     #   text: API Examples
     #   link: /api-examples

@@ -21,7 +21,8 @@ export default defineConfig({
           // { text: 'Runtime API Examples', link: '/api-examples' },
           { text: 'vitePress', link: '/vitePress' },
           { text: '埋点', link: '/tracker' },
-          { text: 'jQuery 无new构建', link: '/jQuery_new' }
+          { text: 'jQuery 无new构建', link: '/jQuery_new' },
+          { text: 'http 缓存', link: '/http_cache' }
         ]
       }
     ],

@@ -3,6 +3,9 @@ outline: deep
 prev:
   text: '埋点'
   link: '/tracker'
+next:
+  text: 'http缓存'
+  link: '/http_cache'
 ---
 
 # jQuery 无new构建
