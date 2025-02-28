@@ -3,6 +3,9 @@ outline: deep
 prev:
   text: 'jQuery 无new构建'
   link: '/jQuery_new'
+next:
+  text: 'axiso'
+  link: '/axiso'
 ---
 
 # http缓存
